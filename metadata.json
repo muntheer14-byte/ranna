@@ -1,0 +1,10 @@
+{
+  "name": "ranna messenger",
+  "description": "تطبيق رنة للمراسلة - التواصل الآمن والخصوصية المطلقة. ranna messenger Elite Edition v2.5.0",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ],
+  "majorCapabilities": []
+}

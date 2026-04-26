@@ -1,0 +1,188 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User account information and public profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "username": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "backgroundPhotoURL": { "type": "string" },
+        "bio": { "type": "string" },
+        "status": { "type": "string" },
+        "isOnline": { "type": "boolean" },
+        "lastSeen": { "type": "string", "format": "date-time" },
+        "verified": { "type": "boolean" },
+        "role": { "type": "string", "enum": ["user", "admin", "moderator"] },
+        "phoneNumber": { "type": "string" },
+        "isPrivate": { "type": "boolean" },
+        "ghostMode": { "type": "boolean" },
+        "settings": { "type": "object" },
+        "blockedUsers": { "type": "array" },
+        "friends": { "type": "array" },
+        "friendRequests": { "type": "array" },
+        "folders": { "type": "array" },
+        "birthday": { "type": "string", "format": "date" },
+        "residence": { "type": "string" },
+        "workplace": { "type": "string" },
+        "jobTitle": { "type": "string" },
+        "maritalStatus": { "type": "string" },
+        "graduationYear": { "type": "string" },
+        "placeOfBirth": { "type": "string" }
+      },
+      "required": ["id", "username", "displayName"]
+    },
+    "Room": {
+      "title": "Chat Room",
+      "description": "A private chat, group, or channel",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["private", "group", "channel", "saved"] },
+        "name": { "type": "string" },
+        "members": { "type": "array" },
+        "admins": { "type": "array" },
+        "e2eEnabled": { "type": "boolean" },
+        "description": { "type": "string" },
+        "photoURL": { "type": "string" }
+      }
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Individual message within a room",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "roomId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderPhoto": { "type": "string" },
+        "content": { "type": "string" },
+        "type": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "readBy": { "type": "array" },
+        "deliveredBy": { "type": "array" },
+        "isEdited": { "type": "boolean" },
+        "isPinned": { "type": "boolean" },
+        "isDeleted": { "type": "boolean" },
+        "deletedFor": { "type": "array" },
+        "participants": { "type": "array" },
+        "isEncrypted": { "type": "boolean" },
+        "scheduledFor": { "type": "string", "format": "date-time" },
+        "threadId": { "type": "string" },
+        "mediaGroup": { "type": "string" },
+        "isSilent": { "type": "boolean" },
+        "isSpoiler": { "type": "boolean" },
+        "storagePath": { "type": "string" }
+      }
+    },
+    "PeerSignal": {
+      "title": "Peer Signal",
+      "description": "WebRTC signalling data for calls",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "senderId": { "type": "string" },
+        "type": { "type": "string" },
+        "data": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Story": {
+      "title": "Story",
+      "description": "Ephemeral status update",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "mediaURL": { "type": "string" },
+        "mediaType": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "views": { "type": "array" }
+      }
+    },
+    "Post": {
+      "title": "Post",
+      "description": "Social feed post",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "authorUid": { "type": "string" },
+        "content": { "type": "string" },
+        "isPublic": { "type": "boolean" },
+        "likes": { "type": "array" },
+        "commentsCount": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "In-app notification for the user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "type": { "type": "string" },
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "data": { "type": "object" },
+        "isRead": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Call": {
+      "title": "Call",
+      "description": "Voice or video call session",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "callerId": { "type": "string" },
+        "receiverId": { "type": "string" },
+        "type": { "type": "string" },
+        "status": { "type": "string" },
+        "duration": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "endedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Public user profiles"
+    },
+    "/usernames/{username}": {
+      "schema": { "type": "object", "properties": { "uid": { "type": "string" } } },
+      "description": "Unique username registry"
+    },
+    "/rooms/{roomId}": {
+      "schema": "Room",
+      "description": "Conversations and metadata"
+    },
+    "/rooms/{roomId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Room messages"
+    },
+    "/stories/{storyId}": {
+      "schema": "Story",
+      "description": "User stories"
+    },
+    "/posts/{postId}": {
+      "schema": "Post",
+      "description": "Social feed posts"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "User-specific notifications"
+    },
+    "/calls/{callId}": {
+      "schema": "Call",
+      "description": "Call records"
+    },
+    "/calls/{callId}/peerSignals/{signalId}": {
+      "schema": "PeerSignal",
+      "description": "WebRTC signalling data"
+    }
+  }
+}

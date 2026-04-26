@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Arabic:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=JetBrains+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600;700;800&family=Nunito:ital,wght@0,300..700;1,300..700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes fluid-mesh {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.bg-mesh-purple-light {
+  background: linear-gradient(-45deg, #f3e8ff, #fae8ff, #e0f2fe, #f5f3ff);
+  background-size: 400% 400%;
+  animation: fluid-mesh 15s ease infinite;
+}
+
+.bg-mesh-purple-dark {
+  background: linear-gradient(-45deg, #2e1065, #4c1d95, #1e1b4b, #581c87);
+  background-size: 400% 400%;
+  animation: fluid-mesh 15s ease infinite;
+}
+
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+  33% { transform: translate(50px, -70px) scale(1.1) rotate(60deg); }
+  66% { transform: translate(-40px, 40px) scale(0.9) rotate(120deg); }
+  100% { transform: translate(0px, 0px) scale(1) rotate(360deg); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+.animate-blob {
+  animation: blob 25s infinite linear;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 8s infinite ease-in-out;
+}
+
+@layer base {
+  :root {
+    --fluid-spacing: 2vw;
+    --accent: #9333ea;
+    --text-main: #0f172a;
+    --bg-main: #faf5ff;
+    --font-primary: "Noto Sans Arabic", "Inter", sans-serif;
+    --color-ranna-teal: #0D9488;
+    --color-ranna-gold: #c5a059;
+  }
+
+  .dark {
+    --accent: #a855f7;
+    --text-main: #ffffff;
+    --bg-main: #000000;
+    --pos-x: 50%;
+    --pos-y: 50%;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+    background-color: var(--bg-main);
+    font-family: var(--font-primary);
+  }
+
+  body {
+    @apply bg-purple-50 dark:bg-black text-slate-900 dark:text-slate-50 antialiased overflow-hidden min-h-screen selection:bg-purple-500 selection:text-white transition-colors duration-500;
+    font-family: var(--font-primary);
+    height: 100dvh;
+  }
+}
+
+@layer utilities {
+  .ranna-glass {
+    @apply backdrop-blur-xl bg-white/40 dark:bg-black/40 border border-white/20 dark:border-white/5 shadow-2xl;
+  }
+
+  .ranna-card-glass {
+    @apply relative overflow-hidden bg-white/40 dark:bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 dark:border-white/5 shadow-sm transition-all duration-500;
+  }
+
+  .ranna-card:hover {
+    @apply -translate-y-1 shadow-2xl border-purple-500/20;
+  }
+
+  .pro-gradient-text {
+    @apply bg-gradient-to-br from-purple-600 via-indigo-500 to-purple-400 bg-clip-text text-transparent font-serif italic;
+  }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .chat-bg-pro {
+    @apply bg-white dark:bg-black transition-colors duration-1000 relative overflow-hidden;
+  }
+
+  .chat-bg-vibrant {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .theme-transition {
+    clip-path: circle(0% at var(--pos-x, 50%) var(--pos-y, 50%));
+    transition: clip-path 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .theme-transition-active {
+    clip-path: circle(150% at var(--pos-x, 50%) var(--pos-y, 50%));
+  }
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { @apply bg-slate-200 dark:bg-slate-800 rounded-full; }
+
+[dir="rtl"] { font-family: "Noto Sans Arabic", "Inter", sans-serif; }

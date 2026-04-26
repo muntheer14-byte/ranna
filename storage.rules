@@ -1,0 +1,83 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Improved participant check (basic substring for now, would prefer Firestore check in production)
+    function isParticipant(roomId) {
+      return isAuthenticated() && (
+        roomId == request.auth.uid ||
+        roomId.matches(".*" + request.auth.uid + ".*")
+      );
+    }
+
+    // Chat Media
+    match /chat-media/{roomId}/{allPaths=**} {
+      allow read: if isAuthenticated() && isParticipant(roomId);
+      allow write: if isAuthenticated() && isParticipant(roomId) &&
+                   request.resource.size < 10 * 1024 * 1024;
+    }
+
+    // Audio Messages
+    match /chat-audio/{roomId}/{allPaths=**} {
+      allow read: if isAuthenticated() && isParticipant(roomId);
+      allow write: if isAuthenticated() && isParticipant(roomId) &&
+                   request.resource.size < 5 * 1024 * 1024;
+    }
+
+    // Video Notes
+    match /chat-video-notes/{roomId}/{allPaths=**} {
+      allow read: if isAuthenticated() && isParticipant(roomId);
+      allow write: if isAuthenticated() && isParticipant(roomId) &&
+                   request.resource.size < 15 * 1024 * 1024;
+    }
+
+    // Profile Photos
+    match /profile-photos/{userId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) &&
+                   request.resource.size < 5 * 1024 * 1024 &&
+                   request.resource.contentType.matches('image/.*');
+    }
+
+    // Post Images
+    match /post-images/{userId}/{postId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) &&
+                   request.resource.size < 10 * 1024 * 1024 &&
+                   request.resource.contentType.matches('image/.*');
+    }
+
+    // Stories
+    match /stories/{userId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) &&
+                   request.resource.size < 20 * 1024 * 1024 &&
+                   (request.resource.contentType.matches('image/.*') ||
+                    request.resource.contentType.matches('video/.*'));
+    }
+
+    // Room/Channel Photos
+    match /rooms/{roomId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() &&
+                   request.resource.size < 5 * 1024 * 1024 &&
+                   request.resource.contentType.matches('image/.*');
+    }
+
+    // Background Photos
+    match /background-photos/{userId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) &&
+                   request.resource.size < 10 * 1024 * 1024 &&
+                   request.resource.contentType.matches('image/.*');
+    }
+  }
+}
